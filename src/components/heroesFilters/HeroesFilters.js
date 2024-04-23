@@ -1,6 +1,7 @@
-import { useHttp } from "../../hooks/http.hook";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
+import { useHttp } from "../../hooks/http.hook";
 
 import {
   heroesFetched,
@@ -24,7 +25,18 @@ const HeroesFilters = () => {
   const dispatch = useDispatch();
   const { request } = useHttp();
 
-  const filterHero = (props) => {
+  const filtersRefs = useRef([]);
+
+  const focusOnFilter = (index) => {
+    filtersRefs.current.forEach((item) => {
+      item.classList.remove("active");
+    });
+    filtersRefs.current[index].classList.add("active");
+    // filtersRefs[index].focus();
+  };
+
+  const filterHero = (props, index) => {
+    focusOnFilter(index);
     if (props.name === "all") {
       request(`http://localhost:3001/heroes`)
         .then((data) => dispatch(heroesFetched(data)))
@@ -56,12 +68,13 @@ const HeroesFilters = () => {
       return <h5 className="text-center mt-5">Фильтров пока нет</h5>;
     }
 
-    return arr.map(({ id, ...props }) => {
+    return arr.map(({ id, ...props }, index) => {
       return (
         <button
           className={`btn ${props.myClass}`}
           key={id}
-          onClick={() => filterHero(props)}
+          ref={(element) => (filtersRefs.current[index] = element)}
+          onClick={() => filterHero(props, index)}
         >
           {props.label}
         </button>

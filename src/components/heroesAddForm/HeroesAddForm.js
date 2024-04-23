@@ -1,7 +1,7 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
-import nextId from "react-id-generator";
+// import nextId from "react-id-generator";
 import { v4 as uuidv4 } from "uuid";
 
 import { useHttp } from "../../hooks/http.hook";
@@ -11,13 +11,13 @@ import { heroesFetched, heroesFetchingError } from "../../actions";
 import "./heroesAddForm.scss";
 
 // Задача для этого компонента:
-// Реализовать создание нового героя с введенными данными. Он должен попадать
+// V - Реализовать создание нового героя с введенными данными. Он должен попадать
 // в общее состояние и отображаться в списке + фильтроваться
-// Уникальный идентификатор персонажа можно сгенерировать через uiid
+// V - Уникальный идентификатор персонажа можно сгенерировать через uiid
 // Усложненная задача:
-// Персонаж создается и в файле json при помощи метода POST
+// V - Персонаж создается и в файле json при помощи метода POST
 // Дополнительно:
-// Элементы <option></option> желательно сформировать на базе
+// V - Элементы <option></option> желательно сформировать на базе
 // данных из фильтров
 
 const HeroesAddForm = () => {
@@ -32,6 +32,21 @@ const HeroesAddForm = () => {
       .then((data) => dispatch(heroesFetched([...heroes, data])))
       .catch(() => dispatch(heroesFetchingError()));
   };
+
+  const renderOptionsFiltersList = (arr) => {
+    if (arr.length !== 0) {
+      const newArr = arr.filter((item) => item.name !== "all");
+      return newArr.map(({ id, ...props }) => {
+        return (
+          <option key={id} value={props.name}>
+            {props.label}
+          </option>
+        );
+      });
+    }
+  };
+
+  const options = renderOptionsFiltersList(filters);
 
   return (
     <Formik
@@ -96,10 +111,11 @@ const HeroesAddForm = () => {
             name="element"
           >
             <option>Я владею элементом...</option>
-            <option value="fire">Огонь</option>
+            {options}
+            {/* <option value="fire">Огонь</option>
             <option value="water">Вода</option>
             <option value="wind">Ветер</option>
-            <option value="earth">Земля</option>
+            <option value="earth">Земля</option> */}
           </Field>
           <ErrorMessage className="error" name="element" component="div" />
         </div>

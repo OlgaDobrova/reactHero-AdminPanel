@@ -40,7 +40,7 @@
   "filters": [
     {
       "id": "1",
-      "myClass": "btn-outline-dark",
+      "myClass": "btn-outline-dark active",
       "name": "all",
       "label": "Все"
     },
