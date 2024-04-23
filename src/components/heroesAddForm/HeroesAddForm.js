@@ -2,6 +2,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
 import nextId from "react-id-generator";
+import { v4 as uuidv4 } from "uuid";
 
 import { useHttp } from "../../hooks/http.hook";
 
@@ -20,21 +21,16 @@ import "./heroesAddForm.scss";
 // данных из фильтров
 
 const HeroesAddForm = () => {
-  const { heroes } = useSelector((state) => state);
+  const { heroes, filters } = useSelector((state) => state);
   const dispatch = useDispatch();
   const { request } = useHttp();
 
   const addHeroes = (item) => {
-    const newHero = { ...item, id: nextId() };
-    const newHeroes = [...heroes, newHero];
+    const newHero = { ...item, id: uuidv4() };
 
-    dispatch(heroesFetched(newHeroes));
-
-    request(
-      "http://localhost:3001/heroes",
-      "POST",
-      JSON.stringify(newHero)
-    ).catch(() => dispatch(heroesFetchingError()));
+    request("http://localhost:3001/heroes", "POST", JSON.stringify(newHero))
+      .then((data) => dispatch(heroesFetched([...heroes, data])))
+      .catch(() => dispatch(heroesFetchingError()));
   };
 
   return (
