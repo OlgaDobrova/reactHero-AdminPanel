@@ -1,47 +1,72 @@
 {
   "heroes": [
     {
-      "id": 1,
-      "name": "Первый герой",
-      "description": "Первый герой в рейтинге!",
-      "element": "fire"
-    },
-    {
-      "id": 2,
-      "name": "Неизвестный герой",
-      "description": "Скрывающийся в тени",
-      "element": "wind"
-    },
-    {
-      "id": 3,
-      "name": "Морской герой",
-      "description": "Как аквамен, но не из DC",
-      "element": "water"
-    },
-    {
-      "name": "ww",
-      "description": "www",
-      "element": "wind",
-      "id": "id1"
-    },
-    {
-      "name": "ww",
-      "description": "www",
-      "element": "wind",
-      "id": "id2"
-    },
-    {
-      "name": "qqq",
-      "description": "qq",
+      "name": "Огненный Джек",
+      "description": "Умеет создавать огненный шар и атаковать им ",
       "element": "fire",
-      "id": "id3"
+      "id": "1"
+    },
+    {
+      "name": "Водяной Шторм",
+      "description": "Умеет делать водяной щит",
+      "element": "water",
+      "id": "2"
+    },
+    {
+      "name": "Ветренный Торнадо",
+      "description": "Умеет разгонятся до скорости света и управлять огромным торнадо",
+      "element": "wind",
+      "id": "3"
+    },
+    {
+      "name": "Земляной Копатель",
+      "description": "Умеет перемещать предметы силой мысли",
+      "element": "earth",
+      "id": "4"
+    },
+    {
+      "name": "Ледяной Шар",
+      "description": "Умеет стрелять ледяными шарами из бластера, образуя при этом ледяную сеть. ",
+      "element": "water",
+      "id": "4ad9db24-d0b4-406b-96d8-1bd7fd7c4aaf"
+    },
+    {
+      "name": "Пламя",
+      "description": "Умеет летать и дышать огнем",
+      "element": "fire",
+      "id": "21e959e2-7253-49c0-8cb8-a38ffc0b1376"
     }
   ],
   "filters": [
-    "all",
-    "fire",
-    "water",
-    "wind",
-    "earth"
+    {
+      "id": "1",
+      "myClass": "btn-outline-dark active",
+      "name": "all",
+      "label": "Все"
+    },
+    {
+      "id": "2",
+      "myClass": "btn-danger",
+      "name": "fire",
+      "label": "Огонь"
+    },
+    {
+      "id": "3",
+      "myClass": "btn-primary",
+      "name": "water",
+      "label": "Вода"
+    },
+    {
+      "id": "4",
+      "myClass": "btn-success",
+      "name": "wind",
+      "label": "Ветер"
+    },
+    {
+      "id": "5",
+      "myClass": "btn-secondary",
+      "name": "earth",
+      "label": "Земля"
+    }
   ]
 }
