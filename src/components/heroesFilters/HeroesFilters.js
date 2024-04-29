@@ -4,11 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHttp } from "../../hooks/http.hook";
 
 import {
-  heroesFetched,
-  heroesFetchingError,
   filtersFetching,
   filtersFetched,
   filtersFetchingError,
+  activeFilterChanged,
 } from "../../actions";
 
 import Spinner from "../spinner/Spinner";
@@ -21,7 +20,9 @@ import Spinner from "../spinner/Spinner";
 // Представьте, что вы попросили бэкенд-разработчика об этом
 
 const HeroesFilters = () => {
-  const { filters, filtersLoadingStatus } = useSelector((state) => state);
+  const { filters, filtersLoadingStatus } = useSelector(
+    (state) => state.filters
+  );
   const dispatch = useDispatch();
   const { request } = useHttp();
 
@@ -32,20 +33,11 @@ const HeroesFilters = () => {
       item.classList.remove("active");
     });
     filtersRefs.current[index].classList.add("active");
-    // filtersRefs[index].focus();
   };
 
   const filterHero = (props, index) => {
     focusOnFilter(index);
-    if (props.name === "all") {
-      request(`http://localhost:3001/heroes`)
-        .then((data) => dispatch(heroesFetched(data)))
-        .catch(() => dispatch(heroesFetchingError()));
-    } else {
-      request(`http://localhost:3001/heroes?element=${props.name}`)
-        .then((data) => dispatch(heroesFetched(data)))
-        .catch(() => dispatch(heroesFetchingError()));
-    }
+    dispatch(activeFilterChanged(props.name));
   };
 
   useEffect(() => {
@@ -53,8 +45,6 @@ const HeroesFilters = () => {
     request("http://localhost:3001/filters")
       .then((data) => dispatch(filtersFetched(data)))
       .catch(() => dispatch(filtersFetchingError()));
-
-    // eslint-disable-next-line
   }, []);
 
   if (filtersLoadingStatus === "loading") {

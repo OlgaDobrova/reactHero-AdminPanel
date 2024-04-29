@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import { useHttp } from "../../hooks/http.hook";
 
-import { heroesFetched, heroesFetchingError } from "../../actions";
+import { heroesCreated, heroesFetchingError } from "../../actions";
 
 import "./heroesAddForm.scss";
 
@@ -21,7 +21,7 @@ import "./heroesAddForm.scss";
 // данных из фильтров
 
 const HeroesAddForm = () => {
-  const { heroes, filters } = useSelector((state) => state);
+  const { filters } = useSelector((state) => state.filters);
   const dispatch = useDispatch();
   const { request } = useHttp();
 
@@ -29,7 +29,7 @@ const HeroesAddForm = () => {
     const newHero = { ...item, id: uuidv4() };
 
     request("http://localhost:3001/heroes", "POST", JSON.stringify(newHero))
-      .then((data) => dispatch(heroesFetched([...heroes, data])))
+      .then((data) => dispatch(heroesCreated(newHero)))
       .catch(() => dispatch(heroesFetchingError()));
   };
 
@@ -112,10 +112,6 @@ const HeroesAddForm = () => {
           >
             <option>Я владею элементом...</option>
             {options}
-            {/* <option value="fire">Огонь</option>
-            <option value="water">Вода</option>
-            <option value="wind">Ветер</option>
-            <option value="earth">Земля</option> */}
           </Field>
           <ErrorMessage className="error" name="element" component="div" />
         </div>
