@@ -53,9 +53,9 @@ const HeroesList = () => {
   }
 
   const onDelete = (id) => {
-    dispatch(heroesDeleted(id));
-
-    request(`http://localhost:3001/heroes/${id}`, "DELETE");
+    request(`http://localhost:3001/heroes/${id}`, "DELETE").then(() =>
+      dispatch(heroesDeleted(id))
+    );
   };
 
   const renderHeroesList = (arr) => {

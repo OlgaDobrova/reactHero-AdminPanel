@@ -17,9 +17,12 @@ const HeroesAddForm = () => {
 
   const addHeroes = (item) => {
     const newHero = { ...item, id: uuidv4() };
-    dispatch(heroesCreated(newHero));
 
-    request("http://localhost:3001/heroes", "POST", JSON.stringify(newHero));
+    request(
+      "http://localhost:3001/heroes",
+      "POST",
+      JSON.stringify(newHero)
+    ).then((data) => dispatch(heroesCreated(data)));
   };
 
   const renderOptionsFiltersList = (arr) => {
