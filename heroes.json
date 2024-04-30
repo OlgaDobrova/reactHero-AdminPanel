@@ -58,7 +58,7 @@
   "filters": [
     {
       "id": "1",
-      "myClass": "btn-outline-dark active",
+      "myClass": "btn-outline-dark",
       "name": "all",
       "label": "Все"
     },

@@ -13,11 +13,6 @@ import {
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from "../spinner/Spinner";
 
-// Задача для этого компонента:
-// V - При клике на "крестик" идет удаление персонажа из общего состояния
-// Усложненная задача:
-// V - Удаление идет и с json файла при помощи метода DELETE
-
 const HeroesList = () => {
   //это ф-ция селектор (т.е. ф-ция, кот содержит часть state)
   //не рендерит контент при выборе одного и того же фильтра!
@@ -27,24 +22,13 @@ const HeroesList = () => {
     (state) => state.heroes.heroes,
     (filter, heroes) => {
       if (filter === "all") {
-        console.log("render");
+        // console.log("render");
         return heroes;
       } else {
         return heroes.filter((item) => item.element === filter);
       }
     }
   );
-
-  // const filteredHeroes = useSelector((state) => {
-  //   if (state.filters.activeFilter === "all") {
-  //     console.log("render");
-  //     return state.heroes.heroes;
-  //   } else {
-  //     return state.heroes.heroes.filter(
-  //       (item) => item.element === state.filters.activeFilter
-  //     );
-  //   }
-  // });
 
   const filteredHeroes = useSelector(filteredHeroesSelector);
 
@@ -71,9 +55,7 @@ const HeroesList = () => {
   const onDelete = (id) => {
     dispatch(heroesDeleted(id));
 
-    request(`http://localhost:3001/heroes/${id}`, "DELETE").catch(() =>
-      dispatch(heroesFetchingError())
-    );
+    request(`http://localhost:3001/heroes/${id}`, "DELETE");
   };
 
   const renderHeroesList = (arr) => {

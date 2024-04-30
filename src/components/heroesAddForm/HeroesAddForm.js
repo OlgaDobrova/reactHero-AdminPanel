@@ -6,19 +6,9 @@ import { v4 as uuidv4 } from "uuid";
 
 import { useHttp } from "../../hooks/http.hook";
 
-import { heroesCreated, heroesFetchingError } from "../../actions";
+import { heroesCreated } from "../../actions";
 
 import "./heroesAddForm.scss";
-
-// Задача для этого компонента:
-// V - Реализовать создание нового героя с введенными данными. Он должен попадать
-// в общее состояние и отображаться в списке + фильтроваться
-// V - Уникальный идентификатор персонажа можно сгенерировать через uiid
-// Усложненная задача:
-// V - Персонаж создается и в файле json при помощи метода POST
-// Дополнительно:
-// V - Элементы <option></option> желательно сформировать на базе
-// данных из фильтров
 
 const HeroesAddForm = () => {
   const { filters } = useSelector((state) => state.filters);
@@ -27,10 +17,9 @@ const HeroesAddForm = () => {
 
   const addHeroes = (item) => {
     const newHero = { ...item, id: uuidv4() };
+    dispatch(heroesCreated(newHero));
 
-    request("http://localhost:3001/heroes", "POST", JSON.stringify(newHero))
-      .then((data) => dispatch(heroesCreated(newHero)))
-      .catch(() => dispatch(heroesFetchingError()));
+    request("http://localhost:3001/heroes", "POST", JSON.stringify(newHero));
   };
 
   const renderOptionsFiltersList = (arr) => {
@@ -64,7 +53,7 @@ const HeroesAddForm = () => {
       })}
       onSubmit={(item, { resetForm }) => {
         resetForm();
-        return addHeroes(item);
+        addHeroes(item);
       }}
     >
       <Form className="border p-4 shadow-lg rounded">
