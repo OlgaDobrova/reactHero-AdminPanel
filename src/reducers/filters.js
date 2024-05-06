@@ -6,6 +6,11 @@ const initialState = {
 
 const filters = (state = initialState, action) => {
   switch (action.type) {
+    case "ACTIVE_FILTER_CHANGED":
+      return {
+        ...state,
+        activeFilter: action.payload,
+      };
     case "FILTERS_FETCHING":
       return {
         ...state,
@@ -21,11 +26,6 @@ const filters = (state = initialState, action) => {
       return {
         ...state,
         filtersLoadingStatus: "error",
-      };
-    case "ACTIVE_FILTER_CHANGED":
-      return {
-        ...state,
-        activeFilter: action.payload,
       };
     default:
       return state;

@@ -35,12 +35,36 @@
       "description": "Умеет летать и дышать огнем",
       "element": "fire",
       "id": "21e959e2-7253-49c0-8cb8-a38ffc0b1376"
+    },
+    {
+      "name": "Звон",
+      "description": "Умеет создавать большие камни из рук и бить ими.",
+      "element": "earth",
+      "id": "d6fc2974-ece8-4ccb-a88d-5ae0454d77a9"
+    },
+    {
+      "name": "Тритан",
+      "description": "Супер прыжок Супер удар Супер  рывок Супер бросок Супер рык Скоростной пинок",
+      "element": "fire",
+      "id": "271c4266-e430-49b4-8f73-3755f394a0e8"
+    },
+    {
+      "name": "Лист травы",
+      "description": " делать супер прыжок",
+      "element": "wind",
+      "id": "95d91aaf-49bf-4dd9-b635-6a0cb45e71d5"
+    },
+    {
+      "name": "test",
+      "description": "eee",
+      "element": "earth",
+      "id": "1c7dd3a4-019b-46ea-a50d-4f8208edce95"
     }
   ],
   "filters": [
     {
       "id": "1",
-      "myClass": "btn-outline-dark active",
+      "myClass": "btn-outline-dark",
       "name": "all",
       "label": "Все"
     },

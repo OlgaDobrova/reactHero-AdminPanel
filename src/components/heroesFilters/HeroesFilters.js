@@ -1,64 +1,21 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { useHttp } from "../../hooks/http.hook";
 
-import {
-  heroesFetched,
-  heroesFetchingError,
-  filtersFetching,
-  filtersFetched,
-  filtersFetchingError,
-  activeFilterChanged,
-} from "../../actions";
+import { fetchFilters, activeFilterChanged } from "../../actions";
 
 import Spinner from "../spinner/Spinner";
 
-// Задача для этого компонента:
-// Фильтры должны формироваться на основании загруженных данных
-// Фильтры должны отображать только нужных героев при выборе
-// Активный фильтр имеет класс active
-// Изменять json-файл для удобства МОЖНО!
-// Представьте, что вы попросили бэкенд-разработчика об этом
-
 const HeroesFilters = () => {
-  const { filters, filtersLoadingStatus } = useSelector(
+  const { filters, filtersLoadingStatus, activeFilter } = useSelector(
     (state) => state.filters
   );
   const dispatch = useDispatch();
   const { request } = useHttp();
 
-  const filtersRefs = useRef([]);
-
-  const activeOnFilter = (index) => {
-    filtersRefs.current.forEach((item) => {
-      item.classList.remove("active");
-    });
-    filtersRefs.current[index].classList.add("active");
-  };
-
-  const filterHero = (props, index) => {
-    activeOnFilter(index);
-    activeFilterChanged(props.name);
-
-    if (props.name === "all") {
-      request(`http://localhost:3001/heroes`)
-        .then((data) => dispatch(heroesFetched(data)))
-        .catch(() => dispatch(heroesFetchingError()));
-    } else {
-      request(`http://localhost:3001/heroes?element=${props.name}`)
-        .then((data) => dispatch(heroesFetched(data)))
-        .catch(() => dispatch(heroesFetchingError()));
-    }
-  };
-
   useEffect(() => {
-    dispatch(filtersFetching());
-    request("http://localhost:3001/filters")
-      .then((data) => dispatch(filtersFetched(data)))
-      .catch(() => dispatch(filtersFetchingError()));
-
-    // eslint-disable-next-line
+    dispatch(fetchFilters(request));
   }, []);
 
   if (filtersLoadingStatus === "loading") {
@@ -72,13 +29,16 @@ const HeroesFilters = () => {
       return <h5 className="text-center mt-5">Фильтров пока нет</h5>;
     }
 
-    return arr.map(({ id, ...props }, index) => {
+    return arr.map(({ id, ...props }) => {
+      let classButton = `btn ${props.myClass}`;
+      if (props.name === activeFilter) {
+        classButton += " active";
+      }
       return (
         <button
-          className={`btn ${props.myClass}`}
+          className={classButton}
           key={id}
-          ref={(element) => (filtersRefs.current[index] = element)}
-          onClick={() => filterHero(props, index)}
+          onClick={() => dispatch(activeFilterChanged(props.name))}
         >
           {props.label}
         </button>

@@ -1,25 +1,15 @@
 import { useHttp } from "../../hooks/http.hook";
-import { useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createSelector } from "reselect";
 
-import {
-  heroesFetching,
-  heroesFetched,
-  heroesFetchingError,
-  // heroDeleted,
-} from "../../actions";
+import { fetchHeroes, heroesDeleted } from "../../actions";
 
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from "../spinner/Spinner";
-// import heroes from "../../reducers/heroes";
-
-// Задача для этого компонента:
-// V - При клике на "крестик" идет удаление персонажа из общего состояния
-// Усложненная задача:
-// V - Удаление идет и с json файла при помощи метода DELETE
 
 const HeroesList = () => {
+  //это ф-ция селектор (т.е. ф-ция, кот содержит часть state)
   //не рендерит контент при выборе одного и того же фильтра!
   //в createSelector заложена мемоизация ф-ции
   const filteredHeroesSelector = createSelector(
@@ -34,32 +24,26 @@ const HeroesList = () => {
       }
     }
   );
-  // const filteredHeroes = useSelector((state) => {
-  //   if (state.filters.activeFilter === "all") {
-  // console.log("render");
-  //     return state.heroes.heroes;
-  //   } else {
-  //     return state.heroes.heroes.filter(
-  //       (item) => item.element === state.filters.activeFilter
-  //     );
-  //   }
-  // });
 
   const filteredHeroes = useSelector(filteredHeroesSelector);
 
   const heroesLoadingStatus = useSelector(
     (state) => state.heroes.heroesLoadingStatus
   );
+
   const dispatch = useDispatch();
   const { request } = useHttp();
 
   useEffect(() => {
-    dispatch(heroesFetching());
-    request("http://localhost:3001/heroes")
-      .then((data) => dispatch(heroesFetched(data)))
-      .catch(() => dispatch(heroesFetchingError()));
+    dispatch(fetchHeroes(request));
+  }, []);
 
-    // eslint-disable-next-line
+  const onDelete = useCallback((id) => {
+    console.log(id);
+
+    // request(`http://localhost:3001/heroes/${id}`, "DELETE")
+    //   .then((data) => console.log(data, "Deleted"))
+    //   .then(() => dispatch(heroesDeleted(id)).catch((err) => console.log(err)));
   }, []);
 
   if (heroesLoadingStatus === "loading") {
@@ -73,8 +57,10 @@ const HeroesList = () => {
       return <h5 className="text-center mt-5">Героев пока нет</h5>;
     }
 
+    // useEffect(() => {}, [onDelete]);
+
     return arr.map(({ id, ...props }) => {
-      return <HeroesListItem key={id} id={id} {...props} />;
+      return <HeroesListItem key={id} id={id} onDelete={onDelete} {...props} />;
     });
   };
 

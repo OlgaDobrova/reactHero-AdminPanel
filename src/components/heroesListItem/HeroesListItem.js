@@ -1,22 +1,8 @@
-import { useHttp } from "../../hooks/http.hook";
-import { useDispatch, useSelector } from "react-redux";
-
-import { heroesFetched, heroesFetchingError } from "../../actions";
-
-const HeroesListItem = ({ id, name, description, element }) => {
-  let elementClassName;
-
-  const { heroes } = useSelector((state) => state.heroes);
-  const dispatch = useDispatch();
-  const { request } = useHttp();
-
-  const removeHero = () => {
-    const newHeroes = heroes.filter((item) => item.id !== id);
-
-    request(`http://localhost:3001/heroes/${id}`, "DELETE")
-      .then(() => dispatch(heroesFetched(newHeroes)))
-      .catch(() => dispatch(heroesFetchingError()));
+const HeroesListItem = ({ id, name, description, element, onDelete }) => {
+  const onHeroDelete = () => {
+    onDelete(id);
   };
+  let elementClassName;
 
   switch (element) {
     case "fire":
@@ -54,7 +40,7 @@ const HeroesListItem = ({ id, name, description, element }) => {
           type="button"
           className="btn-close btn-close"
           aria-label="Close"
-          onClick={removeHero}
+          onClick={onHeroDelete}
         ></button>
       </span>
     </li>
