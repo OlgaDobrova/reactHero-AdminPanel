@@ -1,9 +1,10 @@
 import { useHttp } from "../../hooks/http.hook";
-import { useState, useEffect, useCallback } from "react";
+import { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createSelector } from "reselect";
 
-import { fetchHeroes, heroesDeleted } from "../../actions";
+import { fetchHeroes } from "../../actions";
+import { heroesDeleted } from "./heroesSlice";
 
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from "../spinner/Spinner";
@@ -17,7 +18,7 @@ const HeroesList = () => {
     (state) => state.heroes.heroes,
     (filter, heroes) => {
       if (filter === "all") {
-        console.log("render");
+        // console.log("render");
         return heroes;
       } else {
         return heroes.filter((item) => item.element === filter);
@@ -57,10 +58,10 @@ const HeroesList = () => {
       return <h5 className="text-center mt-5">Героев пока нет</h5>;
     }
 
-    // useEffect(() => {}, [onDelete]);
-
     return arr.map(({ id, ...props }) => {
-      return <HeroesListItem key={id} id={id} onDelete={onDelete} {...props} />;
+      return (
+        <HeroesListItem key={id} onDelete={() => onDelete(id)} {...props} />
+      );
     });
   };
 

@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import { useHttp } from "../../hooks/http.hook";
 
-import { heroesCreated } from "../../actions";
+import { heroesCreated } from "../heroesList/heroesSlice";
 
 import "./heroesAddForm.scss";
 
