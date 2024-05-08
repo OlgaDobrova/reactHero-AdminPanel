@@ -1,10 +1,9 @@
 import { useHttp } from "../../hooks/http.hook";
 import { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createSelector } from "reselect";
+import { createSelector } from "@reduxjs/toolkit";
 
-import { fetchHeroes } from "../../actions";
-import { heroesDeleted } from "./heroesSlice";
+import { heroesDeleted, fetchHeroes } from "./heroesSlice";
 
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from "../spinner/Spinner";
@@ -36,16 +35,19 @@ const HeroesList = () => {
   const { request } = useHttp();
 
   useEffect(() => {
-    dispatch(fetchHeroes(request));
+    dispatch(fetchHeroes());
   }, []);
 
-  const onDelete = useCallback((id) => {
-    console.log(id);
+  const onDelete = useCallback(
+    (id) => {
+      console.log(id);
 
-    // request(`http://localhost:3001/heroes/${id}`, "DELETE")
-    //   .then((data) => console.log(data, "Deleted"))
-    //   .then(() => dispatch(heroesDeleted(id)).catch((err) => console.log(err)));
-  }, []);
+      // request(`http://localhost:3001/heroes/${id}`, "DELETE")
+      //   .then((data) => console.log(data, "Deleted"))
+      //   .then(() => dispatch(heroesDeleted(id)).catch((err) => console.log(err)));
+    },
+    [request]
+  );
 
   if (heroesLoadingStatus === "loading") {
     return <Spinner />;
