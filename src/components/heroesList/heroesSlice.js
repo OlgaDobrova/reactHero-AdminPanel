@@ -1,10 +1,22 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  createAsyncThunk,
+  createEntityAdapter,
+  createSelector,
+} from "@reduxjs/toolkit";
 import { useHttp } from "../../hooks/http.hook";
 
-const initialState = {
-  heroes: [],
+//ф-ция createEntityAdapter() возвращает объект со свойствами, методами и колбэками, мемоизированными селекторами (ф-циями, еот помогают вытащить кусочек store)
+const heroesAdapter = createEntityAdapter();
+
+// const initialState = {
+//   heroes: [],
+//   heroesLoadingStatus: "idle",
+// };
+
+const initialState = heroesAdapter.getInitialState({
   heroesLoadingStatus: "idle",
-};
+});
 
 export const fetchHeroes = createAsyncThunk(
   // имя среза/тип действия (actions)
@@ -36,10 +48,12 @@ const heroesSlice = createSlice({
     // Причем, если в ф-ции будет return, то библиотека не подключится! решит, что мы сами учли принципы иммутабельности
 
     heroesCreated: (state, action) => {
-      state.heroes.push(action.payload);
+      // state.heroes.push(action.payload);
+      heroesAdapter.addOne(state, action.payload);
     },
     heroesDeleted: (state, action) => {
-      state.heroes = state.heroes.filter((item) => item.id !== action.payload);
+      // state.heroes = state.heroes.filter((item) => item.id !== action.payload);
+      heroesAdapter.removeOne(state, action.payload);
     },
   },
   extraReducers: (builder) => {
@@ -50,8 +64,9 @@ const heroesSlice = createSlice({
       })
       //ф-ция успешно выполнена
       .addCase(fetchHeroes.fulfilled, (state, action) => {
-        state.heroes = action.payload;
+        // state.heroes = action.payload;
         state.heroesLoadingStatus = "idle";
+        heroesAdapter.setAll(state, action.payload);
       })
       //ф-ция завершилась ошибкой
       .addCase(fetchHeroes.rejected, (state) => {
@@ -64,10 +79,23 @@ const heroesSlice = createSlice({
 
 const { actions, reducer } = heroesSlice;
 export default reducer;
-export const {
-  heroesFetching,
-  heroesFetched,
-  heroesFetchingError,
-  heroesCreated,
-  heroesDeleted,
-} = actions;
+
+const { selectAll } = heroesAdapter.getSelectors((state) => state.heroes);
+
+//это ф-ция селектор (т.е. ф-ция, кот содержит часть state)
+//не рендерит контент при выборе одного и того же фильтра!
+//в createSelector заложена мемоизация ф-ции
+export const filteredHeroesSelector = createSelector(
+  (state) => state.filters.activeFilter,
+  selectAll,
+  (filter, heroes) => {
+    if (filter === "all") {
+      // console.log("render");
+      return heroes;
+    } else {
+      return heroes.filter((item) => item.element === filter);
+    }
+  }
+);
+
+export const { heroesCreated, heroesDeleted } = actions;

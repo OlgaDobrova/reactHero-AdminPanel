@@ -1,30 +1,17 @@
 import { useHttp } from "../../hooks/http.hook";
 import { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createSelector } from "@reduxjs/toolkit";
 
-import { heroesDeleted, fetchHeroes } from "./heroesSlice";
+import {
+  heroesDeleted,
+  fetchHeroes,
+  filteredHeroesSelector,
+} from "./heroesSlice";
 
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from "../spinner/Spinner";
 
 const HeroesList = () => {
-  //это ф-ция селектор (т.е. ф-ция, кот содержит часть state)
-  //не рендерит контент при выборе одного и того же фильтра!
-  //в createSelector заложена мемоизация ф-ции
-  const filteredHeroesSelector = createSelector(
-    (state) => state.filters.activeFilter,
-    (state) => state.heroes.heroes,
-    (filter, heroes) => {
-      if (filter === "all") {
-        // console.log("render");
-        return heroes;
-      } else {
-        return heroes.filter((item) => item.element === filter);
-      }
-    }
-  );
-
   const filteredHeroes = useSelector(filteredHeroesSelector);
 
   const heroesLoadingStatus = useSelector(
@@ -40,11 +27,9 @@ const HeroesList = () => {
 
   const onDelete = useCallback(
     (id) => {
-      console.log(id);
-
-      // request(`http://localhost:3001/heroes/${id}`, "DELETE")
-      //   .then((data) => console.log(data, "Deleted"))
-      //   .then(() => dispatch(heroesDeleted(id)).catch((err) => console.log(err)));
+      request(`http://localhost:3001/heroes/${id}`, "DELETE")
+        .then(() => dispatch(heroesDeleted(id)))
+        .catch((err) => console.log(err));
     },
     [request]
   );
@@ -69,6 +54,7 @@ const HeroesList = () => {
 
   const elements = renderHeroesList(filteredHeroes);
   return <ul>{elements}</ul>;
+  // return <ul></ul>;
 };
 
 export default HeroesList;

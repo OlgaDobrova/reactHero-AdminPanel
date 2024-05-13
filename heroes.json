@@ -53,12 +53,6 @@
       "description": " делать супер прыжок",
       "element": "wind",
       "id": "95d91aaf-49bf-4dd9-b635-6a0cb45e71d5"
-    },
-    {
-      "name": "test",
-      "description": "eee",
-      "element": "earth",
-      "id": "1c7dd3a4-019b-46ea-a50d-4f8208edce95"
     }
   ],
   "filters": [
