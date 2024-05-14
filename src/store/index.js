@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import heroes from "../components/heroesList/heroesSlice";
 import filters from "../components/heroesFilters/filtersSlice";
+import { apiSlice } from "../api/apiSlice";
 
 // enhancer может дополнять любую ф-цию store
 // middelware дополняет только dispatch
@@ -9,7 +9,7 @@ import filters from "../components/heroesFilters/filtersSlice";
 // указанные аргументы ф-ций идут по умолчанию, но мы их можем не указывать, раскрывать как объекты или переименовывать
 // const stribgMiddelware = (store) => (dispatch) => (action) => {
 // т.е. в первой ф-ции не указан аргумент store, во второй переименован аргумент dispatch
-const stribgMiddelware = () => (next) => (action) => {
+const stringMiddleware = () => (next) => (action) => {
   if (typeof action === "string") {
     return next({
       type: action,
@@ -19,9 +19,9 @@ const stribgMiddelware = () => (next) => (action) => {
 };
 
 const store = configureStore({
-  reducer: { heroes, filters },
+  reducer: { filters, [apiSlice.reducerPath]: apiSlice.reducer },
   middleware: (getDefaultMiddelware) =>
-    getDefaultMiddelware().concat(stribgMiddelware),
+    getDefaultMiddelware().concat(stringMiddleware, apiSlice.middleware),
   devTools: process.env.NODE_ENV !== "production",
 });
 

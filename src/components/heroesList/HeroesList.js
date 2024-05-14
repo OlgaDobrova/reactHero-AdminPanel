@@ -1,43 +1,39 @@
-import { useHttp } from "../../hooks/http.hook";
-import { useEffect, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useCallback, useMemo } from "react";
+import { useSelector } from "react-redux";
 
-import {
-  heroesDeleted,
-  fetchHeroes,
-  filteredHeroesSelector,
-} from "./heroesSlice";
+import { useGetHeroesQuery, useDeleteHeroMutation } from "../../api/apiSlice";
 
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from "../spinner/Spinner";
 
 const HeroesList = () => {
-  const filteredHeroes = useSelector(filteredHeroesSelector);
+  const {
+    data: heroes = [], //последний возвращенный результат ( = [] это значение по умолчанию)
+    isLoading, //статус - первое обращение к серверу
+    isError, //статус - ошибка при запросе к серверу
+  } = useGetHeroesQuery();
 
-  const heroesLoadingStatus = useSelector(
-    (state) => state.heroes.heroesLoadingStatus
-  );
+  const [deleteHero] = useDeleteHeroMutation();
 
-  const dispatch = useDispatch();
-  const { request } = useHttp();
+  const activeFilter = useSelector((state) => state.filters.activeFilter);
 
-  useEffect(() => {
-    dispatch(fetchHeroes());
+  const filteredHeroes = useMemo(() => {
+    const filteredHeroes = heroes.slice(); //это копия heroes
+    if (activeFilter === "all") {
+      return filteredHeroes;
+    } else {
+      return filteredHeroes.filter((item) => item.element === activeFilter);
+    }
+  }, [heroes, activeFilter]);
+
+  const onDelete = useCallback((id) => {
+    deleteHero(id);
   }, []);
 
-  const onDelete = useCallback(
-    (id) => {
-      request(`http://localhost:3001/heroes/${id}`, "DELETE")
-        .then(() => dispatch(heroesDeleted(id)))
-        .catch((err) => console.log(err));
-    },
-    [request]
-  );
-
-  if (heroesLoadingStatus === "loading") {
+  if (isLoading) {
     return <Spinner />;
-  } else if (heroesLoadingStatus === "error") {
-    return <h5 className="text-center mt-5">Ошибка загрузки</h5>;
+  } else if (isError) {
+    return <h5 className="text-center mt-5">error</h5>;
   }
 
   const renderHeroesList = (arr) => {
@@ -54,7 +50,6 @@ const HeroesList = () => {
 
   const elements = renderHeroesList(filteredHeroes);
   return <ul>{elements}</ul>;
-  // return <ul></ul>;
 };
 
 export default HeroesList;

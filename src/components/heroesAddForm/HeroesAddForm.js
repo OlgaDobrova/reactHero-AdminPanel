@@ -1,30 +1,23 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { useDispatch } from "react-redux";
-// import nextId from "react-id-generator";
+
 import { v4 as uuidv4 } from "uuid";
 
-import { useHttp } from "../../hooks/http.hook";
-
-import store from "../../store";
-import { selectAll } from "../heroesFilters/filtersSlice";
-import { heroesCreated } from "../heroesList/heroesSlice";
+import { useCreateHeroMutation, useGetFiltersQuery } from "../../api/apiSlice";
 
 import "./heroesAddForm.scss";
 
 const HeroesAddForm = () => {
-  const filters = selectAll(store.getState());
-  const dispatch = useDispatch();
-  const { request } = useHttp();
+  const {
+    data: filters = [], //последний возвращенный результат ( = [] это значение по умолчанию)
+  } = useGetFiltersQuery();
+
+  const [createHero] = useCreateHeroMutation();
 
   const addHeroes = (item) => {
     const newHero = { ...item, id: uuidv4() };
 
-    request(
-      "http://localhost:3001/heroes",
-      "POST",
-      JSON.stringify(newHero)
-    ).then((data) => dispatch(heroesCreated(data)));
+    createHero(newHero).unwrap();
   };
 
   const renderOptionsFiltersList = (arr) => {
